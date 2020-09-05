@@ -4,6 +4,7 @@
     <Navbar class="home-nav">
       <div slot="center">购物街</div>
     </Navbar>
+    <!-- 商品导航栏 -->
     <TabContorl class="tabcontorl-top" :titles="['流行', '精选', '新款']" @tabClick="tabClick" ref="tabContorl1" v-show="isTabShow"/>
 
     <Scroll class="scroll-content" ref="scroll" :probeType="3" @scroll="contentScroll" :pullUpLoad="true" @pullingUp="loadMroe">
@@ -13,12 +14,12 @@
       <HomeRecommendView :recommends="recommends"/>
       <!-- 本周流行 -->
       <HomeFeatrueView />
-
+      <!-- 商品导航栏 -->
       <TabContorl :titles="['流行', '精选', '新款']" @tabClick="tabClick" ref="tabContorl2"/>
-
+      <!-- 商品信息 -->
       <GoodsList :goods="showGoods"/>
     </Scroll>
-
+    <!-- 回到顶部 -->
     <BackTop @click.native="backClick" v-show="isShowBackTop"/>
   </div>
 </template>
