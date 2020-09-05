@@ -16,12 +16,15 @@ export default {
     }
   },
   methods: { 
-    scrollTo(x, y, time=300) {
-      this.scroll.scrollTo(x, y, time)
+    scrollTo(x, y, time=500) {
+      this.scroll && this.scroll.scrollTo(x, y, time)
     },
     finishPullUp() {
 			this.scroll && this.scroll.finishPullUp()
-		},
+    },
+    refresh() {
+      this.scroll && this.scroll.refresh()
+    }
   },
   components: {
 
@@ -37,6 +40,7 @@ export default {
     }
   },
   mounted () {
+    //创建对象
     this.scroll = new BScroll(this.$refs.wrapper, {
       click: true,
       scrollY: true,
@@ -50,9 +54,12 @@ export default {
 				this.$emit('scroll',position)
 			})
     }
-    this.scroll.on('pullingUp', () => {
-      this.$emit('pullingUp')
-    })
+    //监听上拉事件
+    if(this.pullUpLoad){
+      this.scroll.on('pullingUp', () => {
+        this.$emit('pullingUp')
+      })
+    }
   }
 }
 </script>

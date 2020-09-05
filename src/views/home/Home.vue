@@ -4,16 +4,17 @@
     <Navbar class="home-nav">
       <div slot="center">购物街</div>
     </Navbar>
+    <TabContorl class="tabcontorl-top" :titles="['流行', '精选', '新款']" @tabClick="tabClick" ref="tabContorl1" v-show="isTabShow"/>
 
     <Scroll class="scroll-content" ref="scroll" :probeType="3" @scroll="contentScroll" :pullUpLoad="true" @pullingUp="loadMroe">
       <!-- 轮播图 -->
-      <HomeSwiper :banners="banners"/>
+      <HomeSwiper :banners="banners" @swiperImgLoad="swiperImgLoad"/>
       <!-- 推荐栏 -->
       <HomeRecommendView :recommends="recommends"/>
       <!-- 本周流行 -->
       <HomeFeatrueView />
 
-      <TabContorl class="tabcontorl" :titles="['流行', '精选', '新款']" @tabClick="tabClick"/>
+      <TabContorl :titles="['流行', '精选', '新款']" @tabClick="tabClick" ref="tabContorl2"/>
 
       <GoodsList :goods="showGoods"/>
     </Scroll>
@@ -47,9 +48,9 @@ export default {
 				'sell': {page: 0, list:[]},
       },
       currentType: 'pop',
-      isShowBackTop: false
-      // tabOffsetTop: 0,
-			// isTabShow: false,
+      isShowBackTop: false,
+      tabOffsetTop: 0,
+			isTabShow: false,
     }
   },
   methods: {
@@ -66,31 +67,39 @@ export default {
           this.currentType = 'sell'
           break;
       }
+      this.$refs.tabContorl1.currentIndex = index;
+      this.$refs.tabContorl2.currentIndex = index;
     },
     backClick() {
       this.$refs.scroll.scroll.scrollTo(0, 0)
     }, 
+    //返回顶部是否显示
     contentScroll(position) {
       this.isShowBackTop = (-position.y) > 500;
-			// this.isTabShow = (-position.y) > this.tabOffsetTop;
+			this.isTabShow = (-position.y) > this.tabOffsetTop;
     }, 
+    //下拉加载更多
     loadMroe() {
       this.getGoodsData(this.currentType)
       this.$refs.scroll.scroll.refresh()
     },
+    swiperImgLoad() {
+      this.tabOffsetTop = this.$refs.tabContorl2.$el.offsetTop;
+    },
     // 网络请求
     getHomeMultiData(){
+      //请求多个数据（banner,类目）
       getHomeMultiData().then(res => {
         this.banners = res.data.banner.list;
         this.recommends = res.data.recommend.list;
       })
     },
     getGoodsData(type){
+      //请求商品数据
       const page = this.goods[type].page + 1
       getGoodsData(type, page).then(res => {
         this.goods[type].list.push(...res.data.list)
         this.goods[type].page += 1
-
         this.$refs.scroll.finishPullUp()
       })
     }
@@ -100,6 +109,11 @@ export default {
     this.getGoodsData('pop')
     this.getGoodsData('new')
     this.getGoodsData('sell')
+  },
+  mounted() {
+    this.$bus.$on('itemImageLoad', () => {
+      this.$refs.scroll.refresh()
+    })
   },
   components: {
     Navbar,
@@ -127,23 +141,23 @@ export default {
   .home-nav{
     background-color: var(--color-tint);
     color: #fff;
-    position: fixed;
+    /* position: fixed;
     left: 0;
     right: 0;
     top: 0;
-    z-index: 9;
+    z-index: 9; */
   }
-  .tabcontorl{
-    position: relative;
-    /* top: 44px; */
-    z-index: 9;
-  }
+  /*  */
   .scroll-content{
-    /* overflow: hidden; */
+    overflow: hidden;
     position: absolute;
     top: 44px;
     bottom: 49px;
     left: 0;
     right: 0;
+  }
+  .tabcontorl-top{
+    position: relative;
+    z-index: 9;
   }
 </style>
