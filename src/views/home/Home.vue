@@ -31,7 +31,6 @@ import TabContorl from 'components/common/tabContorl/TabContorl'
 import GoodsList from 'components/content/goods/GoodsList'
 import BackTop from 'components/common/backTop/BackTop'
 
-
 import HomeSwiper from './childComps/HomeSwiper'
 import HomeRecommendView from './childComps/HomeRecommendView'
 import HomeFeatrueView from './childComps/HomeFeatrueView'
@@ -51,7 +50,8 @@ export default {
       currentType: 'pop',
       isShowBackTop: false,
       tabOffsetTop: 0,
-			isTabShow: false,
+      isTabShow: false,
+      saveY: 0
     }
   },
   methods: {
@@ -131,6 +131,13 @@ export default {
       return this.goods[this.currentType].list
     }
   },
+  // activated() {
+  //   this.$refs.scroll.scrollTo(0, this.saveY, 0)
+  //   this.$refs.scroll.refresh()
+  // },
+  // deactivated() {
+  //   this.saveY = this.$refs.scroll.scroll.y
+  // },
 }
 </script>
 
@@ -148,7 +155,6 @@ export default {
     top: 0;
     z-index: 9; */
   }
-  /*  */
   .scroll-content{
     overflow: hidden;
     position: absolute;
