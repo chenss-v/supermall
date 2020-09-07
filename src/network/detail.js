@@ -43,7 +43,8 @@ export function getRecommend(){
 //参数信息
 export class Param {
 	constructor(info, rule) {
-	this.info = info.set;
+		this.image = info.image ? info.image[0] : ''
+		this.info = info.set;
 		this.rule = rule.tables;
 	}
 } 
