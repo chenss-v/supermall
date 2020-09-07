@@ -38,4 +38,7 @@ export default {
   height: 300px;
   overflow: hidden;
 }
+.swiper-item img{
+  height: 300px;
+}
 </style>
