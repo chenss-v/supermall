@@ -33,13 +33,6 @@ export class Shop {
 		this.cGoods = shopInfo.cGoods;
 	}
 }
-//请求推荐recommend
-export function getRecommend(){
-	return request({
-		url:'/recommend'
-	})
-}
-
 //参数信息
 export class Param {
 	constructor(info, rule) {
@@ -48,3 +41,9 @@ export class Param {
 		this.rule = rule.tables;
 	}
 } 
+//请求推荐recommend
+export function getRecommend(){
+	return request({
+		url:'/recommend'
+	})
+}

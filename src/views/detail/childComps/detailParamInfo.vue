@@ -13,7 +13,6 @@
 		</div>
 	</div>
 </template>
-flex
 <script>
 	export default {
 		name:'DetailParamInfo',

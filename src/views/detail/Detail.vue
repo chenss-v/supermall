@@ -1,7 +1,7 @@
 <template>
   <div class="detail">
     <DetailNavBar  class="top-nav"/>
-    <Scroll class="content" ref="scroll">
+    <Scroll class="content" ref="scroll" :probeType="3">
       <DetailSwiper :topImages="topImages"/>
       <DetailBaseInfo :goods="goods"/>
       <DetailShopInfo :shop="shop"/>
@@ -59,7 +59,7 @@ export default {
     DetailShopInfo,
     DetailGoodsInfo,
     DetailParamInfo,
-    DetailCommentInfo,
+    DetailCommentInfo,  
     GoodsList,
     Scroll,
   },
@@ -71,7 +71,6 @@ export default {
     this.iid = this.$route.params.iid
     //根据iid请求详情数据
     getDetail(this.iid).then(res => {
-      console.log(res);
       const data = res.result
       //1.获取顶部banner
       this.topImages = data.itemInfo.topImages
@@ -90,9 +89,20 @@ export default {
     })
     //请求推荐数据
 		getRecommend().then(res => {
-			this.recommendInfo = res.data.data.list
+      this.recommendInfo = res.data.list
 		})
   },
+  // mounted() {
+	// 	//请求数据列表后刷新
+	// 	this.itemImgLister = ()=> {
+  // 		this.$refs.scroll.refresh();
+	// 	}
+	// 	this.$bus.$on('itemImgLoad',this.itemImgLister);
+	// },
+  destroyed() {
+		//取消全局的事件监听
+		this.$bus.$off('itemImgLoad',this.itemImgLister)
+	}
 }
 </script>
 

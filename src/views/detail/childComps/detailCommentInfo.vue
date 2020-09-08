@@ -1,8 +1,8 @@
 <template>
 	<div class="comment-info-wrap" v-if="Object.keys(commentInfo).length !== 0">
-		<div class="comment-title flex">
+		<div class="comment-title">
 			<div>用户评价</div>
-			<div>更多</div>
+			<div class="right">更多</div>
 		</div>
 		<div v-for="(item,index) in commentInfo" :key="index">
 			<div class="comment-user-info">
@@ -57,6 +57,13 @@
 			justify-content: space-between;
 			border-bottom: 1px solid #ececec;
 			padding: 10px 4px;
+			display: flex;
+			.right{
+				text-align: right;
+			}
+			div{
+				flex: 1;
+			}
 		}
 		.comment-user-info {
 			padding: 10px 0;

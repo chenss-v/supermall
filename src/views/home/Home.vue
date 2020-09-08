@@ -51,7 +51,8 @@ export default {
       isShowBackTop: false,
       tabOffsetTop: 0,
       isTabShow: false,
-      saveY: 0
+      saveY: 0,
+      itemImgLister: null
     }
   },
   methods: {
@@ -104,6 +105,7 @@ export default {
         this.$refs.scroll.finishPullUp()
       })
     }
+    
   },
   created() {
     this.getHomeMultiData()
@@ -112,9 +114,10 @@ export default {
     this.getGoodsData('sell')
   },
   mounted() {
-    this.$bus.$on('itemImageLoad', () => {
-      this.$refs.scroll.refresh()
-    })
+    // this.$bus.$on('itemImageLoad', () => {
+    //   this.$refs.scroll.refresh()
+    // })
+    this.$bus.$on('itemImgLoad',this.itemImgLister)
   },
   components: {
     Navbar,
@@ -131,13 +134,16 @@ export default {
       return this.goods[this.currentType].list
     }
   },
-  // activated() {
-  //   this.$refs.scroll.scrollTo(0, this.saveY, 0)
-  //   this.$refs.scroll.refresh()
-  // },
-  // deactivated() {
-  //   this.saveY = this.$refs.scroll.scroll.y
-  // },
+  activated() {
+    this.$refs.scroll.scrollTo(0, this.saveY, 0)
+    this.$refs.scroll.refresh()
+  },
+  deactivated() {
+    //保存Y值
+		this.saveY = this.$refs.scroll.scroll.y
+		//取消全局的事件监听
+		this.$bus.$off('itemImgLoad',this.itemImgLister)
+  },
 }
 </script>
 
