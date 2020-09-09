@@ -72,6 +72,7 @@ export default {
       this.$refs.tabContorl1.currentIndex = index;
       this.$refs.tabContorl2.currentIndex = index;
     },
+    //回到顶部
     backClick() {
       this.$refs.scroll.scroll.scrollTo(0, 0)
     }, 

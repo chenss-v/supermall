@@ -1,7 +1,8 @@
 <template>
   <div class="detail">
-    <DetailNavBar  class="top-nav"/>
-    <Scroll class="content" ref="scroll" :probeType="3">
+    <DetailNavBar  class="top-nav" @titleClick="titleClick" ref="nav"/>
+
+    <Scroll class="content" ref="scroll" :probeType="3" @scroll="contentScroll">
       <DetailSwiper :topImages="topImages"/>
       <DetailBaseInfo :goods="goods"/>
       <DetailShopInfo :shop="shop"/>
@@ -10,19 +11,24 @@
       <DetailCommentInfo :commentInfo="commentInfo" ref="comment"/>
       <GoodsList :goods="recommendInfo" ref="recommend"/>
     </Scroll>
+
+    <BackTop @click.native="backClick" v-show="isShowBackTop"/>
+    <DetailBottomBar @addCart="addCart"/>    
   </div>
 </template>
 
 <script>
+import Scroll from 'components/common/scroll/Scroll'
 import DetailNavBar from './childComps/childNavBar'
 import DetailSwiper from './childComps/childSwiper'
+import BackTop from 'components/common/backTop/BackTop'
 import DetailBaseInfo from './childComps/detailBaseInfo'
 import DetailShopInfo from './childComps/detailShopInfo'
 import DetailGoodsInfo from './childComps/detailGoodsInfo'
 import DetailParamInfo from './childComps/detailParamInfo'
-import DetailCommentInfo from './childComps/detailCommentInfo'
+import DetailBottomBar from './childComps/detailBottomBar'
 import GoodsList from 'components/content/goods/GoodsList'
-import Scroll from 'components/common/scroll/Scroll'
+import DetailCommentInfo from './childComps/detailCommentInfo'
 
 import {getDetail, Goods, Shop, Param, getRecommend} from 'network/detail'
 
@@ -39,18 +45,54 @@ export default {
       paramInfo: {},
       commentInfo: [],
       recommendInfo: [],
+      themeTopY: [],
+      currentIndex: 0,
+      isTabShow: false,
+      isShowBackTop: false,
     }
   },
   methods: { 
     goodsImgLoad() {
-				this.$refs.scroll.refresh();
-				// this.themeTopY = [];
-				// this.themeTopY.push(0);
-				// this.themeTopY.push(this.$refs.param.$el.offsetTop);
-				// this.themeTopY.push(this.$refs.comment.$el.offsetTop);
-				// this.themeTopY.push(this.$refs.recommend.$el.offsetTop);
-				// this.themeTopY.push(Number.MAX_VALUE);
-			},
+			this.$refs.scroll.refresh();
+				this.themeTopY = [];
+				this.themeTopY.push(0);
+				this.themeTopY.push(this.$refs.param.$el.offsetTop);
+				this.themeTopY.push(this.$refs.comment.$el.offsetTop);
+				this.themeTopY.push(this.$refs.recommend.$el.offsetTop);
+        this.themeTopY.push(Number.MAX_VALUE);
+		},
+    titleClick(index) {
+      this.$refs.scroll.scrollTo(0, -this.themeTopY[index], 200)
+    },
+    //回到顶部
+    backClick() {
+      this.$refs.scroll.scroll.scrollTo(0, 0)
+    }, 
+    contentScroll(position) {
+      const positionY = -(position.y);
+			let length = this.themeTopY.length;
+			for(let i=0; i<length-1; i++){
+				//if(this.currentIndex !== i && ((i <length - 1 && positionY >= this.themeTopY[i] && positionY < this.themeTopY[i+1]) || (i === length - 1 && positionY >= this.themeTopY[i]))) {
+        if(this.currentIndex !== i && (positionY >= this.themeTopY[i] && positionY < this.themeTopY[i+1])) {  
+          this.currentIndex = i;
+					this.$refs.nav.currentIndex = this.currentIndex;
+				}
+      }
+      this.isShowBackTop = (-position.y) > 500;
+			this.isTabShow = (-position.y) > this.tabOffsetTop;
+    },
+    //加入购物车
+		addCart() {
+			// 获取购物车需要展示的信息
+			const product = {}
+			product.image = this.topImages[0];
+			product.title = this.goods.title;
+			product.desc = this.goods.discountDesc;
+			product.price = this.goods.newPrice;
+			product.iid = this.iid;
+			//将商品添加到购物车里
+			this.$store.commit('addCart', product);
+		},
   },
   components: {
     DetailNavBar,
@@ -60,8 +102,10 @@ export default {
     DetailGoodsInfo,
     DetailParamInfo,
     DetailCommentInfo,  
+    DetailBottomBar,
     GoodsList,
     Scroll,
+    BackTop
   },
   props: {
 
