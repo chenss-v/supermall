@@ -14,6 +14,7 @@
 
     <BackTop @click.native="backClick" v-show="isShowBackTop"/>
     <DetailBottomBar @addCart="addCart"/>    
+    <!-- <p class="prompt" ref="p">Submission of success</p> -->
   </div>
 </template>
 
@@ -47,7 +48,6 @@ export default {
       recommendInfo: [],
       themeTopY: [],
       currentIndex: 0,
-      isTabShow: false,
       isShowBackTop: false,
     }
   },
@@ -79,7 +79,6 @@ export default {
 				}
       }
       this.isShowBackTop = (-position.y) > 500;
-			this.isTabShow = (-position.y) > this.tabOffsetTop;
     },
     //加入购物车
 		addCart() {
@@ -87,11 +86,11 @@ export default {
 			const product = {}
 			product.image = this.topImages[0];
 			product.title = this.goods.title;
-			product.desc = this.goods.discountDesc;
+			product.desc = this.goods.desc;
 			product.price = this.goods.newPrice;
 			product.iid = this.iid;
 			//将商品添加到购物车里
-			this.$store.commit('addCart', product);
+      this.$store.commit('addCart', product);
 		},
   },
   components: {
@@ -166,10 +165,20 @@ export default {
 	z-index: 11;
 }
 .content {
-		position: absolute;
-		top: 44px;
-		bottom: 49px;
-		left: 0;
-		right: 0;
-	}
+	position: absolute;
+	top: 44px;
+	bottom: 49px;
+	left: 0;
+	right: 0;
+}
+/* .prompt{
+  display: none;
+  padding:20px;
+  position: fixed;
+  top: 40%; left:40%;
+  border-radius:5px;
+  background: rgba(0,0,0,0.4);
+  z-index: 5000;
+  color:#FFF;
+} */
 </style>
